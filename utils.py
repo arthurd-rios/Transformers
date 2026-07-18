@@ -53,11 +53,7 @@ def relu(x):
     
     # ReLU Logic
 
-    if x < 0:
-        return 0
-    
-    else:
-        return x
+    return max(0, x)
 
 def positional_encoding():
     pass
