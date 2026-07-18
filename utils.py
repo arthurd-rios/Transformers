@@ -1,3 +1,5 @@
+import math
+
 def matrix_multiply(matrix1, matrix2):
 
     # Get the dimensions of both matrices
@@ -17,7 +19,7 @@ def matrix_multiply(matrix1, matrix2):
 
     matrix = [[0 for _ in range(num_cols2)] for _ in range(num_rows1)]
 
-    # Multiply Logical
+    # Multiply Logic
 
     for i in range(num_rows1):
 
@@ -29,11 +31,33 @@ def matrix_multiply(matrix1, matrix2):
 
     return matrix
 
-def softmax():
-    pass
+def softmax(v):
+    
+    max_value = max(v)
 
-def relu():
-    pass
+    # Subtract max value from each number in the list to avoid overflow with big numbers
+
+    v = [n - max_value for n in v]
+
+    expo = [math.exp(n) for n in v]
+
+    total_sum = sum(expo)
+
+    # Softmax Logic
+
+    v = [n / total_sum for n in expo]
+
+    return v
+
+def relu(x):
+    
+    # ReLU Logic
+
+    if x < 0:
+        return 0
+    
+    else:
+        return x
 
 def positional_encoding():
     pass
