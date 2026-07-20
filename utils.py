@@ -62,6 +62,8 @@ def positional_encoding(v, pos):
     i = 0
     even = True
 
+    vpe = []
+
     for j, emb in enumerate(v):
 
         if even:
@@ -77,9 +79,9 @@ def positional_encoding(v, pos):
             even = True
             i = i + 1
 
-        v[j] = emb + pe        
+        vpe.append(emb + pe)        
 
-    return v 
+    return vpe
 
 class Linear:
     pass
