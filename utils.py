@@ -128,6 +128,7 @@ class MultiHeadAttention:
         self.dmodel = dmodel
         self.dmha = 64
         self.heads = []
+        self.Wo = []
 
     def create_layer(self):
         
@@ -136,8 +137,41 @@ class MultiHeadAttention:
             head = _HeadAttention(self.dmodel, self.dmha)
             self.heads.append(head)
 
-    def process_layer(self):
-        pass
+        x = math.sqrt(3/self.dmodel)
+
+        initialization_matrix(self.Wo, self.dmha*8, self.dmodel, x)
+
+    def process_layer(self, words):
+        
+        matrices_mha = []
+
+        for head in self.heads:
+
+            Q = matrix_multiply(words, head["Wq"])
+            K = matrix_multiply(words, head["Wk"])
+            V = matrix_multiply(words, head["Wv"])
+
+            KT = [list(row) for row in zip(*K)]
+
+            QKT = matrix_multiply(Q, KT)
+
+            div = math.sqrt(self.dmha)
+
+            QKT = [[n/div for n in row] for row in QKT]
+
+            for row in QKT:
+
+                softmax(row)
+
+            att = matrix_multiply(QKT, V)
+
+            matrices_mha.append(att)
+
+        fmatrix_mha = [sum(rows, []) for rows in zip(*matrices_mha)]
+
+        final_matrix = matrix_multiply(fmatrix_mha, self.Wo)
+
+        return final_matrix
 
 class FeedForward:
     pass
