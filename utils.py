@@ -1,4 +1,5 @@
 import math
+import random
 
 def matrix_multiply(m1, m2):
 
@@ -83,14 +84,60 @@ def positional_encoding(v, pos):
 
     return vpe
 
+def initialization_matrix(m, rows, cols, limit):
+
+    for _ in range(rows):
+
+        c = [0.0 for _ in range(cols)]
+        m.append(c)
+
+    for i in range(rows):
+
+        for j in range(cols):
+
+            m[i][j] = random.uniform(-limit, limit)
+
+    return m
+
 class Linear:
     pass
 
 class LayerNorm:
     pass
 
+class _HeadAttention:
+    
+    def __init__(self, dmodel, dmha):
+
+        self.dmodel = dmodel
+        self.dmha = dmha
+        self.head_matrices = {"Wq" : [], "Wk" : [], "Wv" : []}
+
+    def create_head(self):
+        
+        x = math.sqrt(3/self.dmodel)
+
+        for m in self.head_matrices:
+            
+            initialization_matrix(m, self.dmodel, self.dmha, x)
+
 class MultiHeadAttention:
-    pass
+    
+    def __init__(self, dmodel, mask=None):
+
+        self.dmodel = dmodel
+        self.dmha = 64
+        self.heads = []
+
+    def create_layer(self):
+        
+        for _ in range(8):
+
+            head = _HeadAttention(self.dmodel, self.dmha)
+            self.heads.append(head)
+
+    def process_layer(self):
+        pass
 
 class FeedForward:
     pass
