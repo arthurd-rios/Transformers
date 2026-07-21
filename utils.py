@@ -51,11 +51,11 @@ def softmax(v):
 
     return v
 
-def relu(x):
+def relu(v):
     
     # ReLU Logic
 
-    return max(0, x)
+    return [max(0, x) for x in v]
 
 def positional_encoding(v, pos):
 
@@ -172,14 +172,58 @@ class MultiHeadAttention:
         return final_matrix
 
 class FeedForward:
-    pass
+    
+    def __init__(self, dmodel):
+
+        self.W1 = []
+        self.W2 = []
+        self.b1 = []
+        self.b2 = []
+        self.dmodel = dmodel
+        self.dff = dmodel * 4
+
+    def create_layer(self):
+
+        x = math.sqrt(3/self.dmodel)
+
+        initialization_matrix(self.W1, self.dmodel, self.dff, x)
+        initialization_matrix(self.W2, self.dff, self.dmodel, x)
+
+        self.b1 = [0.0 for _ in range(self.dff)]
+        self.b2 = [0.0 for _ in range(self.dff)]
+
+    def process_layer(self, words):
+
+        fwords = []
+
+        for word in words:
+
+            x1 = matrix_multiply(word, self.W1)
+
+            x1 = [emb + bias1 for emb, bias1 in zip(x1, self.b1)]
+
+            x1 = relu(x1)
+
+            x2 = matrix_multiply(x1, self.W2)
+
+            x2 = [emb + bias2 for emb, bias2 in zip(x2, self.b2)]
+
+            fwords.append(x2)
+
+        return fwords
 
 class AddNorm:
 
     def __init__(self, dmodel):
         
-        self.beta = [0.0 for _ in range(dmodel)]
-        self.gamma = [1.0 for _ in range(dmodel)]
+        self.beta = []
+        self.gamma = []
+        self.dmodel = dmodel
+
+    def create_layer(self):
+
+        self.beta = [0.0 for _ in range(self.dmodel)]
+        self.gamma = [1.0 for _ in range(self.dmodel)]
 
     def _add(self, memb1, memb2):
         
@@ -202,9 +246,9 @@ class AddNorm:
 
         return memb
 
-    def addnorm(self, memb1, memb2):
+    def process_layer(self, words1, words2):
         
-        m = self._add(memb1, memb2)
+        m = self._add(words1, words2)
         m = self._norm(m)
 
         return m
