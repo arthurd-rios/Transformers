@@ -181,9 +181,9 @@ class AddNorm:
         self.beta = [0.0 for _ in range(dmodel)]
         self.gamma = [1.0 for _ in range(dmodel)]
 
-    def _add(self, memb, matt):
+    def _add(self, memb1, memb2):
         
-        m = [[memb[i][j] + matt[i][j] for j in range (len(memb[0]))] for i in range(len(memb))]
+        m = [[memb1[i][j] + memb2[i][j] for j in range (len(memb1[0]))] for i in range(len(memb1))]
 
         return m
 
@@ -194,17 +194,17 @@ class AddNorm:
         for i in range(len(memb)):
 
             row_mean = statistics.mean(memb[i])
-            row_var = statistics.variance(memb[i])
+            row_pvar = statistics.pvariance(memb[i])
 
             for j in range(len(memb[i])):
 
-                memb[i][j] = ((self.gamma)[j] * (memb[i][j] - row_mean)/math.sqrt(row_var + eps)) + (self.beta)[j]
+                memb[i][j] = ((self.gamma)[j] * (memb[i][j] - row_mean)/math.sqrt(row_pvar + eps)) + (self.beta)[j]
 
         return memb
 
-    def addnorm(self, memb, matt):
+    def addnorm(self, memb1, memb2):
         
-        m = self._add(memb, matt)
+        m = self._add(memb1, memb2)
         m = self._norm(m)
 
         return m
