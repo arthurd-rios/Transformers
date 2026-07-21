@@ -1,5 +1,6 @@
 import math
 import random
+import statistics
 
 def matrix_multiply(m1, m2):
 
@@ -102,9 +103,6 @@ def initialization_matrix(m, rows, cols, limit):
 class Linear:
     pass
 
-class LayerNorm:
-    pass
-
 class _HeadAttention:
     
     def __init__(self, dmodel, dmha):
@@ -177,4 +175,36 @@ class FeedForward:
     pass
 
 class AddNorm:
-    pass
+
+    def __init__(self, dmodel):
+        
+        self.beta = [0.0 for _ in range(dmodel)]
+        self.gamma = [1.0 for _ in range(dmodel)]
+
+    def _add(self, memb, matt):
+        
+        m = [[memb[i][j] + matt[i][j] for j in range (len(memb[0]))] for i in range(len(memb))]
+
+        return m
+
+    def _norm(self, memb):
+        
+        eps = 0.000001
+
+        for i in range(len(memb)):
+
+            row_mean = statistics.mean(memb[i])
+            row_var = statistics.variance(memb[i])
+
+            for j in range(len(memb[i])):
+
+                memb[i][j] = ((self.gamma)[j] * (memb[i][j] - row_mean)/math.sqrt(row_var + eps)) + (self.beta)[j]
+
+        return memb
+
+    def addnorm(self, memb, matt):
+        
+        m = self._add(memb, matt)
+        m = self._norm(m)
+
+        return m
