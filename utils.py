@@ -101,7 +101,24 @@ def initialization_matrix(m, rows, cols, limit):
     return m
 
 class Linear:
-    pass
+    
+    def __init__(self, dmodel, dvoc):
+
+        self.W = []
+        self.dmodel = dmodel
+        self.dvoc = dvoc
+
+    def create_layer(self):
+        
+        x = math.sqrt(6/(self.dmodel + self.dvoc))
+
+        initialization_matrix(self.W, self.dmodel, self.dvoc, x)    
+
+    def process_layer(self, word):
+        
+        match = matrix_multiply(word, self.W)
+
+        return match
 
 class _HeadAttention:
     
@@ -184,7 +201,7 @@ class FeedForward:
 
     def create_layer(self):
 
-        x = math.sqrt(3/self.dmodel)
+        x = math.sqrt(6/(self.dmodel + self.dff))
 
         initialization_matrix(self.W1, self.dmodel, self.dff, x)
         initialization_matrix(self.W2, self.dff, self.dmodel, x)
