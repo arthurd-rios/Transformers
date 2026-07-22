@@ -156,15 +156,15 @@ class MultiHeadAttention:
 
         initialization_matrix(self.Wo, self.dmha*8, self.dmodel, x)
 
-    def process_layer(self, words):
+    def process_layer(self, wordsQ, wordsK, wordsV):
         
         matrices_mha = []
 
         for head in self.heads:
 
-            Q = matrix_multiply(words, head["Wq"])
-            K = matrix_multiply(words, head["Wk"])
-            V = matrix_multiply(words, head["Wv"])
+            Q = matrix_multiply(wordsQ, head["Wq"])
+            K = matrix_multiply(wordsK, head["Wk"])
+            V = matrix_multiply(wordsV, head["Wv"])
 
             KT = [list(row) for row in zip(*K)]
 

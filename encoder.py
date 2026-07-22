@@ -19,7 +19,7 @@ class Encoder:
 
     def process_encoder(self, words):
         
-        attention_matrix = self.mha.process_layer(words)
+        attention_matrix = self.mha.process_layer(words, words, words)
 
         addnorm_matrix1 = self.addnorm1.process_layer(attention_matrix, words)
 
