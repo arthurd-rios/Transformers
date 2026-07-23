@@ -144,6 +144,7 @@ class MultiHeadAttention:
         self.dmha = 64
         self.heads = []
         self.Wo = []
+        self.mask = mask
 
     def create_layer(self):
         
@@ -173,6 +174,20 @@ class MultiHeadAttention:
             div = math.sqrt(self.dmha)
 
             QKT = [[n/div for n in row] for row in QKT]
+
+            if self.mask:
+                
+                for i in range(len(QKT)):
+                    
+                    for j in range(len(QKT[i])):
+                        
+                        if j > i:
+
+                            QKT[i][j] = -math.inf
+                        
+                        else:
+
+                            QKT[i][j] = QKT[i][j]
 
             for row in QKT:
 
