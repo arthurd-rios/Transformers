@@ -25,7 +25,7 @@ class Encoder:
 
         feedforward_matrix = self.feedforward.process_layer(addnorm_matrix1)
 
-        addnorm_matrix2 = self.addnorm2.process_layer(self.feedforward, addnorm_matrix1)
+        addnorm_matrix2 = self.addnorm2.process_layer(feedforward_matrix, addnorm_matrix1)
 
         return addnorm_matrix2
 
